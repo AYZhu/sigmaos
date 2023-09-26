@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1-experimental
 
-FROM archlinux
+FROM menci/archlinuxarm
 
 RUN yes | pacman -Syu
-RUN yes | pacman -Sy git libseccomp wget gcc pkg-config parallel
+RUN yes | pacman -Sy git libseccomp wget gcc pkg-config parallel make
 
 # Download an initial version of Go
-RUN wget "https://go.dev/dl/go1.20.4.linux-amd64.tar.gz" && \
-  tar -C /usr/local -xzf go1.20.4.linux-amd64.tar.gz
+RUN wget "https://go.dev/dl/go1.20.4.linux-arm64.tar.gz" && \
+  tar -C /usr/local -xzf go1.20.4.linux-arm64.tar.gz
 
 # Set the PATH to include the new Go install.
 ENV PATH="${PATH}:/usr/local/go/bin"

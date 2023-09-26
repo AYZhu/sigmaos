@@ -108,5 +108,14 @@ for k in $WHAT; do
   fi
 done
 
+if [[ "$k" == "user" ]] ; then
+  echo "building python"
+  cd cpython
+  ./configure > configure.log
+  make -s
+  cp ./python.exe ../bin/user/python
+  cp ./Lib ../bin/user/python_lib -r
+fi
+
 wait
 

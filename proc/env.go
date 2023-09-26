@@ -31,6 +31,7 @@ const (
 	SIGMAJAEGERIP       = "SIGMAJAEGERIP"
 	SIGMAKERNEL         = "SIGMAKERNEL"
 	SIGMAUPROCD         = "SIGMAUPROCD"
+	PYTHONPATH          = "PYTHONPATH"
 )
 
 func GenPid() Tpid {
@@ -48,6 +49,14 @@ func GetPid() Tpid {
 
 func GetProgram() string {
 	return os.Getenv(SIGMAPROGRAM)
+}
+
+func GetPythonPath() string {
+	return "/home/sigmaos/bin/user/common/python_lib"
+}
+
+func SetPythonPath() {
+	os.Setenv(PYTHONPATH, "/home/sigmaos/bin/user/common/python_lib")
 }
 
 func GetName() string {

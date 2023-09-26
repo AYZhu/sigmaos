@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1-experimental
 
-FROM alpine as base
+FROM ubuntu:22.04 as base
 ARG tag
 
 # Install some apt packages for debugging.
@@ -14,13 +14,14 @@ ARG tag
 #  apt autoremove && \
 #  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN apk add --no-cache libseccomp gcompat libpthread-stubs musl-dev
+# RUN apk add --no-cache libseccomp gcompat libpthread-stubs musl-dev
 
 WORKDIR /home/sigmaos
 RUN mkdir bin && \
     mkdir bin/user && \
     mkdir bin/kernel && \
-    mkdir bin/linux
+    mkdir bin/linux && \
+    mkdir /lib64/
 # Copy some yaml files to the base image.
 COPY seccomp seccomp
 ENV SIGMATAG=$tag
@@ -34,6 +35,7 @@ COPY mr mr
 COPY --from=sigmabuilder /home/sigmaos/bin/kernel/uprocd /home/sigmaos/bin/kernel
 # Copy exec-uproc, the trampoline program, to the user image, 
 COPY --from=sigmabuilder /home/sigmaos/bin/user/common/exec-uproc /home/sigmaos/bin/kernel
+ENV PYTHONPATH "/home/sigmaos/bin/user/common/python_lib"
 
 # ========== kernel image, omitting user binaries ==========
 FROM base AS sigmakernelclean
@@ -46,7 +48,7 @@ ENV mongoip x.x.x.x
 ENV jaegerip x.x.x.x
 ENV overlays "false"
 # Install docker-cli
-RUN apk add --update docker openrc
+# RUN apk add --update docker openrc
 ENV reserveMcpu "0"
 # Copy kernel bins
 COPY --from=sigmabuilder /home/sigmaos/bin/kernel /home/sigmaos/bin/kernel
@@ -58,3 +60,4 @@ CMD ["/bin/sh", "-c", "bin/linux/bootkernel ${kernelid} ${named} ${boot} ${dbip}
 # ========== kernel image, including user binaries ==========
 FROM sigmakernelclean AS sigmakernel
 COPY --from=sigmabuilder /home/sigmaos/bin/user /home/sigmaos/bin/user
+ENV PYTHONPATH "/home/sigmaos/bin/user/common/python_lib"
