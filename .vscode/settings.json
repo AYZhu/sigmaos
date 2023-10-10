@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "pycore_import.h": "c",
+        "__locale": "c"
+    }
+}

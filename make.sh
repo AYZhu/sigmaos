@@ -113,7 +113,7 @@ if [[ "$k" == "user" ]] ; then
   cd cpython
   ./configure > configure.log
   make -s
-  cp ./python.exe ../bin/user/python
+  cp ./python ../bin/user/python
   cp ./Lib ../bin/user/python_lib -r
 fi
 

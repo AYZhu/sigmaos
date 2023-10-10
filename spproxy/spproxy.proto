@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "sigmaos/spproxy";
+
+service SPProxyService {
+  rpc SPPProxy(OpenRequest) returns (OpenResult);
+}
+
+message OpenRequest {
+  string text = 1;
+  string mode = 2;
+}
+
+message OpenResult {
+  int64 result = 1;
+}

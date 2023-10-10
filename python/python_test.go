@@ -22,7 +22,7 @@ func TestExerciseProc(t *testing.T) {
 	ts.Write(fd, []byte("print(\"hello, world!\")\n"))
 	ts.Close(fd)
 
-	p := proc.MakeProc("python", []string{})
+	p := proc.MakeProc("python", []string{"name/tfile.py"})
 	err = ts.Spawn(p)
 	assert.Nil(t, err)
 	err = ts.WaitStart(p.GetPid())
