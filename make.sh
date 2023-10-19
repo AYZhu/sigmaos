@@ -112,7 +112,7 @@ if [[ "$k" == "user" ]] ; then
   echo "building python"
   cd cpython
   ./configure > configure.log
-  make -s
+  make -s platform
   cp ./python ../bin/user/python
   cp ./Lib ../bin/user/python_lib -r
 fi

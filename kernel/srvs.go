@@ -52,6 +52,8 @@ func (k *Kernel) BootSub(s string, args []string, p *Param, full bool) (proc.Tpi
 		ss, err = k.bootRealmd()
 	case sp.UPROCDREL:
 		ss, err = k.bootUprocd(args)
+	case sp.SPPROXYD:
+		ss, err = k.bootSPProxyd()
 	default:
 		err = fmt.Errorf("bootSub: unknown srv %s\n", s)
 	}
@@ -143,6 +145,10 @@ func (k *Kernel) bootSchedd() (*Subsystem, error) {
 
 func (k *Kernel) bootNamed() (*Subsystem, error) {
 	return k.bootSubsystem("named", []string{sp.ROOTREALM.String(), "0"}, procclnt.HSCHEDD)
+}
+
+func (k *Kernel) bootSPProxyd() (*Subsystem, error) {
+	return k.bootSubsystem("spproxyd", []string{}, procclnt.HSCHEDD)
 }
 
 // Start uprocd in a sigmauser container and post the mount for

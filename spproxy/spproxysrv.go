@@ -23,12 +23,13 @@ const NAMED_SP_SERVER = DIR_SP_SERVER + "spproxy-server"
 func RunSPProxySrv(public bool) error {
 	sigmapsrv := &SigmapSrv{rand.String(8)}
 	dbg.DPrintf(DEBUG_SP_SERVER, "==%v== Creating spproxysrv server \n", sigmapsrv.sid)
-	ssrv, err := sigmasrv.MakeSigmaSrvPublic(NAMED_SP_SERVER, sigmapsrv, DEBUG_SP_SERVER, public)
+	srv, err := sigmasrv.MakeSigmaSrvPort(NAMED_SP_SERVER, "1910", DEBUG_SP_SERVER, sigmapsrv)
+	// ssrv, err := sigmasrv.MakeSigmaSrvPublic(NAMED_SP_SERVER, sigmapsrv, DEBUG_SP_SERVER, public)
 	if err != nil {
 		return err
 	}
 	dbg.DPrintf(DEBUG_SP_SERVER, "==%v== Starting to run spproxy service\n", sigmapsrv.sid)
-	return ssrv.RunServer()
+	return srv.RunServer()
 }
 
 // find meaning of life for request

@@ -3,7 +3,7 @@
 FROM menci/archlinuxarm
 
 RUN yes | pacman -Syu
-RUN yes | pacman -Sy git libseccomp wget gcc pkg-config parallel make
+RUN yes | pacman -Sy git libseccomp wget gcc pkg-config parallel make python
 
 # Download an initial version of Go
 RUN wget "https://go.dev/dl/go1.20.4.linux-arm64.tar.gz" && \

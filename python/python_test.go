@@ -11,11 +11,14 @@ import (
 	// SigmaOS imports:
 	"sigmaos/proc"
 	sp "sigmaos/sigmap"
+	"sigmaos/spproxy"
 	"sigmaos/test"
 )
 
 func TestExerciseProc(t *testing.T) {
 	ts := test.MakeTstateAll(t)
+
+	spproxy.RunSPProxySrv(true)
 
 	fd, err := ts.Create("name/tfile.py", sp.DMWRITE|sp.DMREAD, sp.OWRITE)
 	assert.Nil(t, err)
