@@ -39,6 +39,8 @@ func RunUProc(uproc *proc.Proc) error {
 	uproc.AppendEnv("PATH", "/bin:/bin2:/usr/bin:/home/sigmaos/bin/kernel")
 	uproc.AppendEnv("SIGMA_EXEC_TIME", strconv.FormatInt(time.Now().UnixMicro(), 10))
 	uproc.AppendEnv("RUST_BACKTRACE", "1")
+	uproc.AppendEnv("PYTHONPATH", "/bin2/pylib/Lib") // todo: fix
+	uproc.AppendEnv("LD_PRELOAD", "/bin2/ld_fstatat.so")
 	cmd.Env = uproc.GetEnv()
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

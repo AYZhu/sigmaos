@@ -30,11 +30,14 @@ func TestSyscallBlock(t *testing.T) {
 
 func TestPython(t *testing.T) {
 	ts := test.NewTstateAll(t)
-	p := proc.NewProc("python", []string{"hello.py"})
+	p := proc.NewProc("python", []string{"/bin2/hello.py"})
+	print("spawn")
 	err := ts.Spawn(p)
 	assert.Nil(ts.T, err)
+	print("wait start")
 	err = ts.WaitStart(p.GetPid())
 	assert.Nil(ts.T, err, "Error waitstart: %v", err)
+	print("wait exit")
 	st, err := ts.WaitExit(p.GetPid())
 	assert.Nil(t, err)
 	assert.True(t, st.IsStatusOK(), st)

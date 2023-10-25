@@ -28,14 +28,23 @@ RUN apk add --no-cache libseccomp \
 
 WORKDIR /home/sigmaos
 RUN mkdir -p bin/kernel && \
-  mkdir -p bin/user
+  mkdir -p bin/user && \ 
+  mkdir -p pylib
 
 RUN wget https://www.python.org/ftp/python/3.11.0/Python-3.11.0.tar.xz && tar -xJf Python-3.11.0.tar.xz
+# RUN cd Python-3.11.0 && \
+#  ./configure --disable-shared LDFLAGS="-static" CFLAGS="-static" CPPFLAGS="-static" && \
+#  make -j
 RUN cd Python-3.11.0 && \
-  ./configure --disable-shared LDFLAGS="-static" CFLAGS="-static" CPPFLAGS="-static" && \
+  ./configure --disable-shared && \
   make -j
 
-RUN cp Python-3.11.0/python bin/user
+RUN cp Python-3.11.0/python bin/user && \
+    cp Python-3.11.0/Lib pylib -r
+
+COPY ld_preload ld_preload
+# TODO: fix this.
+RUN gcc -Wall -fPIC -shared -o ld_fstatat.so ld_preload/ld_fstatat.c
 
 # Install rust
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
