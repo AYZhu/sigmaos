@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "sigmaos/downloadd/proto";
+
+service Downloadd {
+  rpc Download(DownloadRequest) returns (DownloadResponse);
+}
+
+
+message DownloadRequest {
+  string namedPath = 1;
+}
+
+message DownloadResponse {
+  string tmpPath = 1;
+}

@@ -51,6 +51,8 @@ func (k *Kernel) BootSub(s string, args []string, p *Param, full bool) (sp.Tpid,
 		ss, err = k.bootProcq()
 	case sp.SCHEDDREL:
 		ss, err = k.bootSchedd()
+	case sp.DOWNLOADDREL:
+		ss, err = k.bootDownloadd()
 	case sp.REALMDREL:
 		ss, err = k.bootRealmd()
 	case sp.UPROCDREL:
@@ -151,6 +153,10 @@ func (k *Kernel) bootProcq() (*Subsystem, error) {
 
 func (k *Kernel) bootSchedd() (*Subsystem, error) {
 	return k.bootSubsystem("schedd", []string{k.Param.KernelId, k.Param.ReserveMcpu}, proc.HLINUX)
+}
+
+func (k *Kernel) bootDownloadd() (*Subsystem, error) {
+	return k.bootSubsystem("downloadd", []string{k.Param.KernelId}, proc.HLINUX)
 }
 
 func (k *Kernel) bootNamed() (*Subsystem, error) {
