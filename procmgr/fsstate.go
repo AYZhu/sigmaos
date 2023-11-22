@@ -2,6 +2,7 @@ package procmgr
 
 import (
 	"path"
+	"sigmaos/downloadd"
 
 	db "sigmaos/debug"
 	"sigmaos/proc"
@@ -16,6 +17,7 @@ import (
 func (mgr *ProcMgr) setupProcState(p *proc.Proc) {
 	mgr.addRunningProc(p)
 	// Set up the directory to cache proc binaries for this realm.
+	downloadd.InitDownloadPath()
 	mgr.setupUserBinCache(p)
 	// Make the proc's procdir if this is a kernel proc. This will be done lazily
 	// for user procs.

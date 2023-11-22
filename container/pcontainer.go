@@ -86,6 +86,13 @@ func StartPContainer(p *proc.Proc, kernelId string, realm sp.Trealm, r *port.Ran
 					Target:   path.Join(sp.SIGMAHOME, "bin", "user"),
 					ReadOnly: true,
 				},
+				/** user lib clone dir TODO enable
+				mount.Mount{
+					Type:     mount.TypeBind,
+					Source:   path.Join("/tmp/sigmaos-lib", realm.String()),
+					Target:   path.Join(sp.SIGMAHOME, "lib"),
+					ReadOnly: true,
+				},*/
 				// perf output dir
 				mount.Mount{
 					Type:     mount.TypeBind,

@@ -171,6 +171,12 @@ fn jail_proc(pid: &str) -> Result<(), Box<dyn std::error::Error>> {
         .flags(MountFlags::BIND)
         .mount(shome + "bin/kernel", "bin2")?;
 
+    /**let shome: String = sigmahome.to_owned();
+    Mount::builder()
+        .fstype("none")
+        .flags(MountFlags::BIND | MountFlags::RDONLY)
+        .mount(shome + "lib", "lib2")?; TODO enable*/
+
     // ========== No more mounts beyond this point ==========
     pivot_root(".", old_root_mnt)?;
 

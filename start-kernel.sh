@@ -97,6 +97,7 @@ KERNELID=$1
 mkdir -p /tmp/sigmaos
 mkdir -p /tmp/sigmaos-bin
 mkdir -p /tmp/sigmaos-perf
+mkdir -p /tmp/sigmaos-lib
 
 # Pull latest docker images
 if ! [ -z "$TAG" ]; then
@@ -127,6 +128,7 @@ CID=$(docker run -dit\
              --mount type=bind,src=/tmp/sigmaos,dst=/tmp/sigmaos\
              --mount type=bind,src=/tmp/sigmaos-bin,dst=/home/sigmaos/bin/user/realms\
              --mount type=bind,src=/tmp/sigmaos-perf,dst=/tmp/sigmaos-perf\
+             --mount type=bind,src=/tmp/sigmaos-lib,dst=/home/sigmaos/lib/user/realms\
              --mount type=bind,src=${HOME}/.aws,dst=/home/sigmaos/.aws\
              --network ${NET}\
              --name ${KERNELID}\

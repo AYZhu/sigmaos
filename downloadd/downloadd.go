@@ -32,7 +32,7 @@ func NewDownloadd(kernelId string) *Downloadd {
 
 func RunDownloadd(kernelId string) error {
 	sd := NewDownloadd(kernelId)
-	ssrv, err := sigmasrv.NewSigmaSrv(NAMED_DOWNLOAD_SERVER, sd, proc.GetProcEnv())
+	ssrv, err := sigmasrv.NewSigmaSrvPort(NAMED_DOWNLOAD_SERVER, "6581", proc.GetProcEnv(), sd)
 	sd.client = *ssrv.MemFs.SigmaClnt()
 	if err != nil {
 		db.DFatalf("Error PDS: %v", err)
@@ -50,10 +50,15 @@ func (downloadsrv *Downloadd) Download(ctx fs.CtxI, req proto.DownloadRequest, r
 	return nil
 }
 
+func InitDownloadPath() error {
+	return nil
+}
+
 // Try to download a proc at pn to local Ux dir. May fail if ux crashes.
 func (downloadsrv *Downloadd) tryDownloadPath(realm sp.Trealm, file string) (string, error) {
 	// start := time.Now()
 	// db.DPrintf(db.PROCMGR, "tryDownloadProcPath %s", src)
+	// cachePn := path.Join(sp.UX, "lib", "user", "realms", realm.String(), file) TODO enable
 	cachePn := path.Join(sp.UXBIN, "user", "realms", realm.String(), file)
 	// Copy the binary from s3 to a temporary file.
 	if err := downloadsrv.client.CopyFile(file, cachePn); err != nil {
