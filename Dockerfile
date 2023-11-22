@@ -44,7 +44,8 @@ COPY --from=sigma-build-kernel /home/sigmaos/hello.py /home/sigmaos/bin/kernel/h
 COPY --from=sigma-build-user-rust /home/sigmaos/bin/kernel/exec-uproc-rs /home/sigmaos/bin/kernel/exec-uproc-rs
 # TODO: fix this, too
 COPY --from=sigma-build-user-rust /home/sigmaos/pylib /home/sigmaos/bin/kernel/pylib
-COPY --from=sigma-build-user-rust /home/sigmaos/ld_fstatat.so /home/sigmaos/bin/kernel/ld_fstatat.so
+COPY --from=sigma-build-user /home/sigmaos/ld_fstatat.so /home/sigmaos/bin/kernel/ld_fstatat.so
+COPY --from=sigma-build-user /home/sigmaos/ld_fstatat_go.so /home/sigmaos/bin/kernel/ld_fstatat_go.so
 
 RUN ls /home/sigmaos/bin/user
 RUN ls /home/sigmaos/bin/kernel

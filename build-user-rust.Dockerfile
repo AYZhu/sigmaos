@@ -11,7 +11,8 @@ RUN apk add --no-cache libseccomp \
   gcc \
   libc-dev \
   libseccomp-static \
-  make
+  make \ 
+  go
 
 # Install musl libc
 # RUN wget http://www.musl-libc.org/releases/musl-1.2.4.tar.gz && tar -xzf musl-1.2.4.tar.gz
@@ -41,10 +42,6 @@ RUN cd Python-3.11.0 && \
 
 RUN cp Python-3.11.0/python bin/user && \
     cp Python-3.11.0/Lib pylib -r
-
-COPY ld_preload ld_preload
-# TODO: fix this.
-RUN gcc -Wall -fPIC -shared -o ld_fstatat.so ld_preload/ld_fstatat.c
 
 # Install rust
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
