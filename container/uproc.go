@@ -41,7 +41,6 @@ func RunUProc(uproc *proc.Proc) error {
 	uproc.AppendEnv("RUST_BACKTRACE", "1")
 	uproc.AppendEnv("PYTHONPATH", "/~~") // todo: fix
 	uproc.AppendEnv("LD_PRELOAD", "/bin2/ld_fstatat.so")
-	// uproc.AppendEnv("LD_PRELOAD", "/bin2/ld_fstatat_go.so /bin2/ld_fstatat.so")
 	cmd.Env = uproc.GetEnv()
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

@@ -4,6 +4,7 @@ import (
 	"path"
 	db "sigmaos/debug"
 	"sigmaos/downloadd/proto"
+	"sigmaos/downloaddclnt"
 	"sigmaos/fs"
 	"sigmaos/proc"
 	"sigmaos/sigmaclnt"
@@ -16,6 +17,7 @@ type Downloadd struct {
 	kernelId string
 	realms   []sp.Trealm
 	client   sigmaclnt.SigmaClnt
+	ddc      *downloaddclnt.DownloaddClnt
 }
 
 const DEBUG_DOWNLOAD_SERVER = "DOWNLOAD_SERVER"
@@ -34,6 +36,7 @@ func RunDownloadd(kernelId string) error {
 	sd := NewDownloadd(kernelId)
 	ssrv, err := sigmasrv.NewSigmaSrvPort(NAMED_DOWNLOAD_SERVER, "6581", proc.GetProcEnv(), sd)
 	sd.client = *ssrv.MemFs.SigmaClnt()
+	// sd.ddc, err = downloaddclnt.NewDownloaddClnt(sd.client.FsLib, kernelId)
 	if err != nil {
 		db.DFatalf("Error PDS: %v", err)
 	}

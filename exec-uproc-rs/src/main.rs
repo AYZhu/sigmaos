@@ -54,6 +54,13 @@ fn main() {
     now = SystemTime::now();
     jail_proc(pid).expect("jail failed");
     print_elapsed_time("trampoline.fs_jail_proc", now);
+
+    // proxy set-up
+    use nix::unistd::mkfifo;
+    use nix::sys::stat::Mode;
+    mkfifo("/tmp/proxy-out.log", Mode::S_IRWXU | Mode::S_IRWXG | Mode::S_IRWXO);
+    mkfifo("/tmp/proxy-in.log", Mode::S_IRWXU | Mode::S_IRWXG | Mode::S_IRWXO);
+
     now = SystemTime::now();
     setcap_proc().expect("set caps failed");
     print_elapsed_time("trampoline.setcap_proc", now);
@@ -68,6 +75,9 @@ fn main() {
 
     let new_args: Vec<_> = std::env::args_os().skip(2).collect();
     let mut cmd = Command::new(program.clone());
+    Command::new("echoproxy")
+            .env_remove("LD_PRELOAD")
+            .spawn();
 
     // Reset the exec time
     now = SystemTime::now();

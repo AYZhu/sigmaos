@@ -50,10 +50,5 @@ RUN --mount=type=cache,target=/root/.cache/go-build ./make.sh --norace --gopath 
   mv bin/user/* bin/common && \
   mv bin/common bin/user/common
 
-COPY ld_preload ld_preload
-# TODO: fix this.
-RUN go build -o ld_fstatat_go.so -buildmode=c-shared ld_preload/ld_fstatat.go
-RUN gcc -Wall -fPIC -shared -o ld_fstatat.so ld_preload/ld_fstatat.c  
-
 # When this container image is run, copy user bins to host
 CMD ["sh", "-c", "cp -r --no-preserve=mode,ownership bin/user/* /tmp/bin"]
