@@ -22,7 +22,6 @@ type Downloadd struct {
 
 const DEBUG_DOWNLOAD_SERVER = "DOWNLOAD_SERVER"
 const DIR_DOWNLOAD_SERVER = sp.NAMED + "downloadd/"
-const NAMED_DOWNLOAD_SERVER = DIR_DOWNLOAD_SERVER + "download-server"
 
 func NewDownloadd(kernelId string) *Downloadd {
 	sd := &Downloadd{
@@ -34,7 +33,7 @@ func NewDownloadd(kernelId string) *Downloadd {
 
 func RunDownloadd(kernelId string) error {
 	sd := NewDownloadd(kernelId)
-	ssrv, err := sigmasrv.NewSigmaSrvPort(NAMED_DOWNLOAD_SERVER, "6581", proc.GetProcEnv(), sd)
+	ssrv, err := sigmasrv.NewSigmaSrv(path.Join(DIR_DOWNLOAD_SERVER, kernelId), sd, proc.GetProcEnv())
 	sd.client = *ssrv.MemFs.SigmaClnt()
 	// sd.ddc, err = downloaddclnt.NewDownloaddClnt(sd.client.FsLib, kernelId)
 	if err != nil {

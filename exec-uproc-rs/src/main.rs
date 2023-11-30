@@ -77,6 +77,7 @@ fn main() {
     let mut cmd = Command::new(program.clone());
     Command::new("echoproxy")
             .env_remove("LD_PRELOAD")
+            .env("GOMAXPROCS", "1")
             .spawn();
 
     // Reset the exec time
