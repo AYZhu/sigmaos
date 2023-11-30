@@ -39,6 +39,7 @@ const char* get_path(const char *filename)
     printf("opened pipes\n");
     fflush(stdout);
 
+    write(fd, "l", 1);
     write(fd, &(filename[3]), strlen(filename) - 3);
     write(fd, "\n", 1);
     read(fdRes, x2, 2);

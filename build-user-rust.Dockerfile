@@ -58,8 +58,10 @@ RUN cp exec-uproc-rs/target/debug/exec-uproc-rs bin/kernel
 RUN touch /home/sigmaos/bin/user/test-rust-bin
 
 COPY ld_preload ld_preload
+COPY pylib pylib2
 # TODO: fix this.
 RUN gcc -Wall -fPIC -shared -o ld_fstatat.so ld_preload/ld_fstatat.c 
+RUN mv pylib2/splib.py pylib/Lib
 
 # When this container image is run, copy bins to host
 CMD ["sh", "-c", "cp -r bin/user/* /tmp/bin/common/"]
