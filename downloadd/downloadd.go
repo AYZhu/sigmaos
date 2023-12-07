@@ -2,11 +2,13 @@ package downloadd
 
 import (
 	"path"
+	"path/filepath"
 	db "sigmaos/debug"
 	"sigmaos/downloadd/proto"
 	"sigmaos/downloaddclnt"
 	"sigmaos/fs"
 	"sigmaos/proc"
+	"sigmaos/serr"
 	"sigmaos/sigmaclnt"
 	"sigmaos/sigmasrv"
 
@@ -43,9 +45,9 @@ func RunDownloadd(kernelId string) error {
 	return nil
 }
 
-func (downloadsrv *Downloadd) Download(ctx fs.CtxI, req proto.DownloadRequest, rep *proto.DownloadResponse) error {
+func (downloadsrv *Downloadd) Download(ctx fs.CtxI, req proto.DownloadLibRequest, rep *proto.DownloadLibResponse) error {
 	db.DPrintf(DEBUG_DOWNLOAD_SERVER, "==%v== Received Download Request: %v\n", downloadsrv.kernelId, req)
-	out, err := downloadsrv.tryDownloadPath("<TODO>", req.NamedPath) // NamedPath should probably be path.Join(sp.UXBIN, "user", "common", "filename")
+	out, err := downloadsrv.tryDownloadLibPath(sp.Trealm(req.GetRealm()), req.GetNamedPath())
 	if err == nil {
 		rep.TmpPath = out
 	}
@@ -56,16 +58,68 @@ func InitDownloadPath() error {
 	return nil
 }
 
+func (downloadsrv *Downloadd) touchLibPath(realm sp.Trealm, path string) error {
+	db.DPrintf(db.ALWAYS, "touchLibPath %s", path)
+	err := downloadsrv.client.MkDir(path, 0777)
+
+	if err == nil {
+		return nil
+	}
+
+	if serr.IsErrCode(err, serr.TErrNotfound) {
+		err = downloadsrv.touchLibPath(realm, filepath.Dir(path))
+	}
+
+	if err != nil {
+		return err
+	}
+
+	err = downloadsrv.client.MkDir(path, 0777)
+	db.DPrintf(db.ALWAYS, "touchLibPathCompleteWith %s", path)
+	return err
+}
+
 // Try to download a proc at pn to local Ux dir. May fail if ux crashes.
-func (downloadsrv *Downloadd) tryDownloadPath(realm sp.Trealm, file string) (string, error) {
+func (downloadsrv *Downloadd) tryDownloadLibPath(realm sp.Trealm, file string) (string, error) {
 	// start := time.Now()
-	// db.DPrintf(db.PROCMGR, "tryDownloadProcPath %s", src)
-	// cachePn := path.Join(sp.UX, "lib", "user", "realms", realm.String(), file) TODO enable
+	db.DPrintf(db.ALWAYS, "tryDownloadProcPath %s", file)
+	fs := downloadsrv.client
+	libPath := path.Join(sp.UXBIN, "user", "common", file)
+	fsfs, err := fs.IsDir(libPath)
 	cachePn := path.Join(sp.UXBIN, "user", "realms", realm.String(), file)
-	// Copy the binary from s3 to a temporary file.
-	if err := downloadsrv.client.CopyFile(file, cachePn); err != nil {
+
+	if err != nil {
+		db.DPrintf(db.ALWAYS, "error 1 %s", err.Error())
 		return "", err
 	}
-	// db.DPrintf(db.PROCMGR, "Took %v to download proc %v", time.Since(start), src)
+
+	if fsfs {
+		err = fs.MkDir(cachePn, 0777)
+		if err != nil {
+			if serr.IsErrCode(err, serr.TErrNotfound) { // walk
+				err = downloadsrv.touchLibPath(realm, cachePn)
+			}
+			if serr.IsErrCode(err, serr.TErrExists) {
+				return cachePn, nil
+			}
+		}
+		if err != nil {
+			db.DPrintf(db.ALWAYS, "error 2 %s", err.Error())
+			return "", err
+		}
+		return cachePn, nil
+	}
+
+	err = downloadsrv.client.CopyFile(libPath, cachePn)
+
+	if serr.IsErrCode(err, serr.TErrExists) {
+		return cachePn, nil
+	}
+
+	if err != nil {
+		db.DPrintf(db.ALWAYS, "error! %s", err.Error())
+		return "", err
+	}
+
 	return cachePn, nil
 }

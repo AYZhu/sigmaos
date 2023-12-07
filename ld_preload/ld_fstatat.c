@@ -50,7 +50,7 @@ const char* get_path(const char *filename)
     x2[2] = '\0';
     printf("got back %s", x2);
 
-    sprintf(x, "%s%s", "/bin2/pylib/Lib", &(filename[3]));
+    sprintf(x, "%s%s", "/bin/pylib/Lib", &(filename[3]));
     // printf("redirected file at %s to %s\n", filename, x);
     return x;
 }

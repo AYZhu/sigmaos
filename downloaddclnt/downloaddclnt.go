@@ -2,6 +2,7 @@ package downloaddclnt
 
 import (
 	"path"
+	"sigmaos/downloadd/proto"
 	"sigmaos/fslib"
 	"sigmaos/rpcclnt"
 	sp "sigmaos/sigmap"
@@ -23,16 +24,16 @@ func NewDownloaddClnt(fsl *fslib.FsLib, srvId string) (*DownloaddClnt, error) {
 	}, nil
 }
 
-func (ddc *DownloaddClnt) Download(path string) error {
-	print("going to ask for download ")
-	println(path)
-	/**
-	req := &proto.DownloadRequest{
+func (ddc *DownloaddClnt) Download(path string, realm string) error {
+	req := &proto.DownloadLibRequest{
 		NamedPath: path,
+		Realm:     realm,
 	}
-	res := &proto.DownloadResponse{}
+	res := &proto.DownloadLibResponse{}
 	if err := ddc.rpcc.RPC("Downloadd.Download", req, res); err != nil {
 		return err
-	}*/
+	}
+	print("got back ")
+	println(res.GetTmpPath())
 	return nil
 }

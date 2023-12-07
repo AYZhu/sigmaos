@@ -81,6 +81,7 @@ CMD ["/bin/sh", "-c", "bin/linux/bootkernel ${kernelid} ${named} ${boot} ${dbip}
 FROM sigmaos AS sigmaos-with-userbin
 COPY --from=sigma-build-user /home/sigmaos/bin/user /home/sigmaos/bin/user
 COPY --from=sigma-build-user-rust /home/sigmaos/bin/user /home/sigmaos/bin/user/common
+COPY --from=sigma-build-user-rust /home/sigmaos/pylib /home/sigmaos/bin/user/common/pylib
 RUN cp /home/sigmaos/bin/kernel/named /home/sigmaos/bin/user/common/named
 
 RUN ls /home/sigmaos/bin/user/common

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	db "sigmaos/debug"
 	"sigmaos/downloaddclnt"
 	"sigmaos/proc"
@@ -57,7 +58,7 @@ func main() {
 		if text[0] == 'l' {
 			print("load at ")
 			println(text[1 : len(text)-1])
-			ddc.Download(text[1 : len(text)-1])
+			ddc.Download(path.Join("pylib", "Lib", text[1:len(text)-1]), proc.GetProcEnv().GetRealmStr())
 		}
 		out.WriteString("d\n")
 	}

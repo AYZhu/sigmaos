@@ -34,8 +34,8 @@ func RunUProc(uproc *proc.Proc) error {
 
 	printDir("/home/sigmaos/bin/user")
 
-	// cmd := exec.Command("strace", append([]string{"-f", "exec-uproc-rs", uproc.GetProgram()}, uproc.Args...)...)
-	cmd := exec.Command("exec-uproc-rs", append([]string{uproc.GetProgram()}, uproc.Args...)...)
+	cmd := exec.Command("strace", append([]string{"-f", "exec-uproc-rs", uproc.GetProgram()}, uproc.Args...)...)
+	// cmd := exec.Command("exec-uproc-rs", append([]string{uproc.GetProgram()}, uproc.Args...)...)
 	uproc.AppendEnv("PATH", "/bin:/bin2:/usr/bin:/home/sigmaos/bin/kernel")
 	uproc.AppendEnv("SIGMA_EXEC_TIME", strconv.FormatInt(time.Now().UnixMicro(), 10))
 	uproc.AppendEnv("RUST_BACKTRACE", "1")
