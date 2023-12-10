@@ -24,13 +24,14 @@ func NewDownloaddClnt(fsl *fslib.FsLib, srvId string) (*DownloaddClnt, error) {
 	}, nil
 }
 
-func (ddc *DownloaddClnt) Download(path string, realm string) error {
+func (ddc *DownloaddClnt) DownloadLib(path string, realm string, copyFolder bool) error {
 	req := &proto.DownloadLibRequest{
-		NamedPath: path,
-		Realm:     realm,
+		NamedPath:  path,
+		Realm:      realm,
+		CopyFolder: copyFolder,
 	}
 	res := &proto.DownloadLibResponse{}
-	if err := ddc.rpcc.RPC("Downloadd.Download", req, res); err != nil {
+	if err := ddc.rpcc.RPC("Downloadd.DownloadLib", req, res); err != nil {
 		return err
 	}
 	print("got back ")

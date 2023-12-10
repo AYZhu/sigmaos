@@ -71,13 +71,28 @@ func (fl *FsLib) CopyDir(src, dst string) error {
 		s := src + "/" + st.Name
 		d := dst + "/" + st.Name
 		db.DPrintf(db.FSLIB, "CopyFile: %v %v\n", s, d)
-		b, err := fl.GetFile(s)
+		isDir, err := fl.IsDir(s)
 		if err != nil {
 			return true, err
 		}
-		_, err = fl.PutFile(d, 0777, sp.OWRITE, b)
-		if err != nil {
-			return true, err
+		if isDir {
+			err := fl.MkDir(d, 0777)
+			if err != nil {
+				return true, err
+			}
+			err = fl.CopyDir(s, d)
+			if err != nil {
+				return true, err
+			}
+		} else {
+			b, err := fl.GetFile(s)
+			if err != nil {
+				return true, err
+			}
+			_, err = fl.PutFile(d, 0777, sp.OWRITE, b)
+			if err != nil {
+				return true, err
+			}
 		}
 		return false, nil
 	})

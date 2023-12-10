@@ -31,26 +31,29 @@ const char* get_path(const char *filename)
     
     if (i < 3) return filename;
 
-    if(!res) {
-        fd = open_func(pipeFile, 1, 0666); // O_WRONLY
-        fdRes = open_func(pipeResFile, 0, 0666); // O_RDONLY 
-        res = 1;
-        printf("opened pipes\n");
-        fflush(stdout);
-    }
     printf("writing pipe %s %li\n", filename, strlen(filename));
     fflush(stdout);
     char* x = malloc(512 * sizeof(char));
-    char x2[3];
+    sprintf(x, "%s%s", "/bin/pylib/Lib", &(filename[3]));
 
+    if(!res) {
+        fd = open_func(pipeFile, 1, 0666); // O_WRONLY
+        fdRes = open_func(pipeResFile, 0, 0666); // O_RDONLY
+        write(fd, "b", 1);
+        write(fd, "\n", 1);
+        res = 1;
+        printf("opened pipes\n");
+        fflush(stdout);
+        return x;
+    }
+
+    char x2[3];
     write(fd, "l", 1);
     write(fd, &(filename[3]), strlen(filename) - 3);
     write(fd, "\n", 1);
     read(fdRes, x2, 2);
     x2[2] = '\0';
     printf("got back %s", x2);
-
-    sprintf(x, "%s%s", "/bin/pylib/Lib", &(filename[3]));
     // printf("redirected file at %s to %s\n", filename, x);
     return x;
 }

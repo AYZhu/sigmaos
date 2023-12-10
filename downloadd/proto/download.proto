@@ -3,13 +3,14 @@ syntax = "proto3";
 option go_package = "sigmaos/downloadd/proto";
 
 service Downloadd {
-  rpc Download(DownloadLibRequest) returns (DownloadLibResponse);
+  rpc DownloadLib(DownloadLibRequest) returns (DownloadLibResponse);
 }
 
 
 message DownloadLibRequest {
   string namedPath = 1;
   string realm = 2;
+  bool   copyFolder = 3;
 }
 
 message DownloadLibResponse {

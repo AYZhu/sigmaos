@@ -1,6 +1,7 @@
 package downloadd
 
 import (
+	"errors"
 	"path"
 	"path/filepath"
 	db "sigmaos/debug"
@@ -45,9 +46,9 @@ func RunDownloadd(kernelId string) error {
 	return nil
 }
 
-func (downloadsrv *Downloadd) Download(ctx fs.CtxI, req proto.DownloadLibRequest, rep *proto.DownloadLibResponse) error {
+func (downloadsrv *Downloadd) DownloadLib(ctx fs.CtxI, req proto.DownloadLibRequest, rep *proto.DownloadLibResponse) error {
 	db.DPrintf(DEBUG_DOWNLOAD_SERVER, "==%v== Received Download Request: %v\n", downloadsrv.kernelId, req)
-	out, err := downloadsrv.tryDownloadLibPath(sp.Trealm(req.GetRealm()), req.GetNamedPath())
+	out, err := downloadsrv.tryDownloadLibPath(sp.Trealm(req.GetRealm()), req.GetNamedPath(), req.GetCopyFolder())
 	if err == nil {
 		rep.TmpPath = out
 	}
@@ -80,7 +81,7 @@ func (downloadsrv *Downloadd) touchLibPath(realm sp.Trealm, path string) error {
 }
 
 // Try to download a proc at pn to local Ux dir. May fail if ux crashes.
-func (downloadsrv *Downloadd) tryDownloadLibPath(realm sp.Trealm, file string) (string, error) {
+func (downloadsrv *Downloadd) tryDownloadLibPath(realm sp.Trealm, file string, copyFolder bool) (string, error) {
 	// start := time.Now()
 	db.DPrintf(db.ALWAYS, "tryDownloadProcPath %s", file)
 	fs := downloadsrv.client
@@ -107,7 +108,18 @@ func (downloadsrv *Downloadd) tryDownloadLibPath(realm sp.Trealm, file string) (
 			db.DPrintf(db.ALWAYS, "error 2 %s", err.Error())
 			return "", err
 		}
+		if copyFolder {
+			err = fs.CopyDir(libPath, cachePn)
+			if err != nil {
+				db.DPrintf(db.ALWAYS, "error 3 %s", err.Error())
+				return "", err
+			}
+		}
 		return cachePn, nil
+	}
+
+	if copyFolder {
+		return "", errors.New("copy folder called on a file")
 	}
 
 	err = downloadsrv.client.CopyFile(libPath, cachePn)

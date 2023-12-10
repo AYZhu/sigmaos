@@ -55,10 +55,16 @@ func main() {
 			out.Close()
 			os.Exit(0)
 		}
+		if text[0] == 'b' {
+			print("bootstrap python")
+			ddc.DownloadLib(path.Join("pylib", "Lib"), proc.GetProcEnv().GetRealmStr(), false)
+			ddc.DownloadLib(path.Join("pylib", "Lib", "encodings"), proc.GetProcEnv().GetRealmStr(), true)
+			ddc.DownloadLib(path.Join("pylib", "Lib", "splib.py"), proc.GetProcEnv().GetRealmStr(), false)
+		}
 		if text[0] == 'l' {
 			print("load at ")
 			println(text[1 : len(text)-1])
-			ddc.Download(path.Join("pylib", "Lib", text[1:len(text)-1]), proc.GetProcEnv().GetRealmStr())
+			ddc.DownloadLib(path.Join("pylib", "Lib", text[1:len(text)-1]), proc.GetProcEnv().GetRealmStr(), false)
 		}
 		out.WriteString("d\n")
 	}
