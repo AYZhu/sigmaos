@@ -30,7 +30,7 @@ func TestSyscallBlock(t *testing.T) {
 
 func TestPython(t *testing.T) {
 	ts := test.NewTstateAll(t)
-	p := proc.NewProc("python", []string{"/bin2/hello.py"})
+	p := proc.NewProc("python", []string{"/~~/hello.py"})
 	print("spawn")
 	err := ts.Spawn(p)
 	assert.Nil(ts.T, err)

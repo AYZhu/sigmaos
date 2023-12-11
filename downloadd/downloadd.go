@@ -83,11 +83,11 @@ func (downloadsrv *Downloadd) touchLibPath(realm sp.Trealm, path string) error {
 // Try to download a proc at pn to local Ux dir. May fail if ux crashes.
 func (downloadsrv *Downloadd) tryDownloadLibPath(realm sp.Trealm, file string, copyFolder bool) (string, error) {
 	// start := time.Now()
-	db.DPrintf(db.ALWAYS, "tryDownloadProcPath %s", file)
 	fs := downloadsrv.client
 	libPath := path.Join(sp.UXBIN, "user", "common", file)
 	fsfs, err := fs.IsDir(libPath)
 	cachePn := path.Join(sp.UXBIN, "user", "realms", realm.String(), file)
+	db.DPrintf(db.ALWAYS, "tryDownloadProcPath %s -> %s", libPath, cachePn)
 
 	if err != nil {
 		db.DPrintf(db.ALWAYS, "error 1 %s", err.Error())
@@ -133,5 +133,6 @@ func (downloadsrv *Downloadd) tryDownloadLibPath(realm sp.Trealm, file string, c
 		return "", err
 	}
 
+	db.DPrintf(db.ALWAYS, "copied NEW file %s", cachePn)
 	return cachePn, nil
 }

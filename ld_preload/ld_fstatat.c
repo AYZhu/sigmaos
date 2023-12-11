@@ -31,29 +31,25 @@ const char* get_path(const char *filename)
     
     if (i < 3) return filename;
 
-    printf("writing pipe %s %li\n", filename, strlen(filename));
     fflush(stdout);
     char* x = malloc(512 * sizeof(char));
-    sprintf(x, "%s%s", "/bin/pylib/Lib", &(filename[3]));
+    char x2[3];
+    sprintf(x, "%s%s", "/bin", &(filename[3]));
 
     if(!res) {
         fd = open_func(pipeFile, 1, 0666); // O_WRONLY
         fdRes = open_func(pipeResFile, 0, 0666); // O_RDONLY
-        write(fd, "b", 1);
+        write(fd, "pb", 2);
         write(fd, "\n", 1);
+        read(fdRes, x2, 2);
         res = 1;
-        printf("opened pipes\n");
-        fflush(stdout);
         return x;
     }
-
-    char x2[3];
-    write(fd, "l", 1);
+    write(fd, "pf", 2);
     write(fd, &(filename[3]), strlen(filename) - 3);
     write(fd, "\n", 1);
     read(fdRes, x2, 2);
     x2[2] = '\0';
-    printf("got back %s", x2);
     // printf("redirected file at %s to %s\n", filename, x);
     return x;
 }
@@ -72,18 +68,6 @@ int fstat(int fd, struct stat *st)
     int res = fstat_func(fd, st);
     return res;
 }
-/*
-int open(const char *filename, int flags)
-{
-
-
-    static int (*open_func)(const char*, int) = NULL;
-    open_func = (int(*)(const char*, int)) dlsym(RTLD_NEXT, "open");
-    int res = open_func(get_path(filename), flags);
-    printf("preloaded open\n");
-    fflush(stdout);
-    return res;
-}*/
 
 int open(const char *filename, int flags, mode_t mode)
 {

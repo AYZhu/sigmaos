@@ -10,10 +10,11 @@ import (
 
 type DownloaddClnt struct {
 	*fslib.FsLib
-	rpcc *rpcclnt.RPCClnt
+	rpcc  *rpcclnt.RPCClnt
+	realm string
 }
 
-func NewDownloaddClnt(fsl *fslib.FsLib, srvId string) (*DownloaddClnt, error) {
+func NewDownloaddClnt(fsl *fslib.FsLib, srvId string, realm string) (*DownloaddClnt, error) {
 	rpcc, err := rpcclnt.NewRPCClnt([]*fslib.FsLib{fsl}, path.Join(sp.DOWNLOADD, srvId))
 	if err != nil {
 		return nil, err
@@ -21,20 +22,32 @@ func NewDownloaddClnt(fsl *fslib.FsLib, srvId string) (*DownloaddClnt, error) {
 	return &DownloaddClnt{
 		FsLib: fsl,
 		rpcc:  rpcc,
+		realm: realm,
 	}, nil
 }
 
-func (ddc *DownloaddClnt) DownloadLib(path string, realm string, copyFolder bool) error {
+func (ddc *DownloaddClnt) DownloadLib(path string, copyFolder bool) error {
 	req := &proto.DownloadLibRequest{
 		NamedPath:  path,
-		Realm:      realm,
+		Realm:      ddc.realm,
 		CopyFolder: copyFolder,
 	}
 	res := &proto.DownloadLibResponse{}
 	if err := ddc.rpcc.RPC("Downloadd.DownloadLib", req, res); err != nil {
 		return err
 	}
-	print("got back ")
-	println(res.GetTmpPath())
 	return nil
 }
+
+// func (ddc *DownloaddClnt) DownloadNamed(path string, copyFolder bool) error {
+// 	req := &proto.DownloadNamedRequest{
+// 		NamedPath:  path,
+// 		Realm:      ddc.realm,
+// 		CopyFolder: copyFolder,
+// 	}
+// 	res := &proto.DownloadNamedResponse{}
+// 	if err := ddc.rpcc.RPC("Downloadd.DownloadNamed", req, res); err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }

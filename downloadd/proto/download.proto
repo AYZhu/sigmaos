@@ -4,6 +4,7 @@ option go_package = "sigmaos/downloadd/proto";
 
 service Downloadd {
   rpc DownloadLib(DownloadLibRequest) returns (DownloadLibResponse);
+  rpc DownloadNamed(DownloadLibRequest) returns (DownloadLibResponse);
 }
 
 

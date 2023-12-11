@@ -43,7 +43,6 @@ COPY --from=sigma-build-kernel /home/sigmaos/hello.py /home/sigmaos/bin/kernel/h
 # Copy rust trampoline to the user image.
 COPY --from=sigma-build-user-rust /home/sigmaos/bin/kernel/exec-uproc-rs /home/sigmaos/bin/kernel/exec-uproc-rs
 # TODO: fix this, too
-COPY --from=sigma-build-user-rust /home/sigmaos/pylib /home/sigmaos/bin/kernel/pylib
 COPY --from=sigma-build-kernel /home/sigmaos/bin/kernel/echoproxy /home/sigmaos/bin/kernel
 COPY --from=sigma-build-user-rust /home/sigmaos/ld_fstatat.so /home/sigmaos/bin/kernel/ld_fstatat.so
 
@@ -81,6 +80,7 @@ CMD ["/bin/sh", "-c", "bin/linux/bootkernel ${kernelid} ${named} ${boot} ${dbip}
 FROM sigmaos AS sigmaos-with-userbin
 COPY --from=sigma-build-user /home/sigmaos/bin/user /home/sigmaos/bin/user
 COPY --from=sigma-build-user-rust /home/sigmaos/bin/user /home/sigmaos/bin/user/common
+COPY --from=sigma-build-user-rust /home/sigmaos/hello.py /home/sigmaos/bin/user/common/hello.py
 COPY --from=sigma-build-user-rust /home/sigmaos/pylib /home/sigmaos/bin/user/common/pylib
 RUN cp /home/sigmaos/bin/kernel/named /home/sigmaos/bin/user/common/named
 
