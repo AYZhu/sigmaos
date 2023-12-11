@@ -48,9 +48,10 @@ const char* get_path(const char *filename)
     write(fd, "pf", 2);
     write(fd, &(filename[3]), strlen(filename) - 3);
     write(fd, "\n", 1);
-    read(fdRes, x2, 2);
-    x2[2] = '\0';
-    // printf("redirected file at %s to %s\n", filename, x);
+    read(fdRes, x2, 1);
+    while(x2[0] != 'd') {
+        read(fdRes, x2, 1);
+    }
     return x;
 }
 

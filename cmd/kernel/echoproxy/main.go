@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path"
+	db "sigmaos/debug"
 	"sigmaos/downloaddclnt"
 	"sigmaos/proc"
 	"sigmaos/sigmaclnt"
@@ -71,19 +72,21 @@ func main() {
 				if err != nil {
 					quitErr(4, err.Error(), sc)
 				}
+				out.WriteString("d\n")
 			}
 			if text[1] == 'f' {
 				err := ddc.DownloadLib(text[2:len(text)-1], false)
 				if err != nil {
-					out.WriteString("d\n")
+					db.DPrintf(db.ALWAYS, "error executing %v: %v", text, err)
 				}
+				out.WriteString("d\n")
 			} else if text[1] == 'd' {
 				err := ddc.DownloadLib(text[2:len(text)-1], true)
 				if err != nil {
-					out.WriteString("d\n")
+					db.DPrintf(db.ALWAYS, "error executing %v: %v", text, err)
 				}
+				out.WriteString("d\n")
 			}
 		}
-		out.WriteString("d\n")
 	}
 }

@@ -39,7 +39,6 @@ COPY mr mr
 
 # Copy uprocd, the entrypoint for this container, to the user image.
 COPY --from=sigma-build-kernel /home/sigmaos/bin/kernel/uprocd /home/sigmaos/bin/kernel
-COPY --from=sigma-build-kernel /home/sigmaos/hello.py /home/sigmaos/bin/kernel/hello.py
 # Copy rust trampoline to the user image.
 COPY --from=sigma-build-user-rust /home/sigmaos/bin/kernel/exec-uproc-rs /home/sigmaos/bin/kernel/exec-uproc-rs
 # TODO: fix this, too
@@ -80,7 +79,6 @@ CMD ["/bin/sh", "-c", "bin/linux/bootkernel ${kernelid} ${named} ${boot} ${dbip}
 FROM sigmaos AS sigmaos-with-userbin
 COPY --from=sigma-build-user /home/sigmaos/bin/user /home/sigmaos/bin/user
 COPY --from=sigma-build-user-rust /home/sigmaos/bin/user /home/sigmaos/bin/user/common
-COPY --from=sigma-build-user-rust /home/sigmaos/hello.py /home/sigmaos/bin/user/common/hello.py
 COPY --from=sigma-build-user-rust /home/sigmaos/pylib /home/sigmaos/bin/user/common/pylib
 RUN cp /home/sigmaos/bin/kernel/named /home/sigmaos/bin/user/common/named
 

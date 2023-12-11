@@ -35,7 +35,9 @@ RUN wget https://www.python.org/ftp/python/3.11.0/Python-3.11.0.tar.xz && tar -x
 # RUN cd Python-3.11.0 && \
 #  ./configure --disable-shared LDFLAGS="-static" CFLAGS="-static" CPPFLAGS="-static" && \
 #  make -j
+COPY pyModule.config pyModule.config
 RUN cd Python-3.11.0 && \
+  cat ../pyModule.config >> Modules/Setup && \
   ./configure --disable-shared && \
   make -j
 
@@ -58,7 +60,6 @@ RUN touch /home/sigmaos/bin/user/test-rust-bin
 
 COPY ld_preload ld_preload
 COPY pylib pylib2
-COPY hello.py ./
 # TODO: fix this.
 RUN gcc -Wall -fPIC -shared -o ld_fstatat.so ld_preload/ld_fstatat.c 
 RUN mv pylib2/splib.py pylib/Lib

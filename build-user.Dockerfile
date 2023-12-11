@@ -50,5 +50,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build ./make.sh --norace --gopath 
   mv bin/user/* bin/common && \
   mv bin/common bin/user/common
 
+RUN mv cmd/python bin/user/common/pyproc
+
 # When this container image is run, copy user bins to host
 CMD ["sh", "-c", "cp -r --no-preserve=mode,ownership bin/user/* /tmp/bin"]
