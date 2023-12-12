@@ -15,6 +15,9 @@ def wait_done(rd):
     while x != 'd':
         x = rd.read(1)
 
+class NestedModuleNotFoundError(ImportError):
+    pass
+
 def sp_import_std(lib):
     with open(pipeFile, "w", buffering=1) as pf:
         with open(pipeResFile) as rd:
@@ -24,12 +27,11 @@ def sp_import_std(lib):
             wait_done(rd)
     
     importlib.invalidate_caches()
-    print(os.listdir("/bin"), flush=True)
-    try:
-        return importlib.import_module(lib)
-    except ModuleNotFoundError as e:
-        if e.name != lib:
-            sp_import_std(e.name)
-            return sp_import_std(lib)
-        else: 
-            raise e
+    while True:
+        try:
+            return importlib.import_module(lib)
+        except ModuleNotFoundError as e:
+            if e.name != lib:
+                sp_import_std(e.name)
+            else: 
+                raise NestedModuleNotFoundError(e)

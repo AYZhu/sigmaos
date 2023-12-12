@@ -20,5 +20,5 @@ func main() {
 
 	log.Printf("Hello world\n")
 
-	sc.ClntExitOK()
+	sc.ClntExit(proc.NewStatusInfo(proc.StatusOK, "Hello world", nil))
 }

@@ -52,6 +52,7 @@ func main() {
 		}
 		if text[0] == 'p' {
 			if text[1] == 'b' {
+				sc.Started()
 				err := ddc.DownloadLib(path.Join("pylib", "Lib"), false)
 				if err != nil {
 					quitErr(0, err.Error(), sc)

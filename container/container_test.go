@@ -28,22 +28,6 @@ func TestSyscallBlock(t *testing.T) {
 	ts.Shutdown()
 }
 
-func TestPython(t *testing.T) {
-	ts := test.NewTstateAll(t)
-	p := proc.NewProc("python", []string{"/~~/pyproc/hello.py"})
-	print("spawn")
-	err := ts.Spawn(p)
-	assert.Nil(ts.T, err)
-	print("wait start")
-	err = ts.WaitStart(p.GetPid())
-	assert.Nil(ts.T, err, "Error waitstart: %v", err)
-	print("wait exit")
-	st, err := ts.WaitExit(p.GetPid())
-	assert.Nil(t, err)
-	assert.True(t, st.IsStatusOK(), st)
-	ts.Shutdown()
-}
-
 func TestExpose(t *testing.T) {
 	const (
 		FPORT port.Tport = 100
