@@ -96,3 +96,24 @@ func TestPythonFile(t *testing.T) {
 
 	ts.Shutdown()
 }
+
+func TestPythonNested(t *testing.T) {
+	ts := test.NewTstateAll(t)
+
+	fd, err := ts.Create("name/test.py", sp.DMWRITE|sp.DMREAD, sp.OWRITE)
+	assert.Nil(t, err)
+	ts.Write(fd, []byte("print(f\"hello, {sys.argv[2]}!\")\nsplib.sp_exit()"))
+	ts.Close(fd)
+
+	p := proc.NewProc("python", []string{"/~~/pyproc/named.py", "name/test.py", "6.581!"})
+	err = ts.Spawn(p)
+	err = ts.WaitStart(p.GetPid())
+	st, err := ts.WaitExit(p.GetPid())
+	assert.Nil(t, err)
+	assert.True(t, st.IsStatusOK(), st)
+
+	err = ts.Remove("name/test.py")
+	assert.Nil(t, err)
+
+	ts.Shutdown()
+}
