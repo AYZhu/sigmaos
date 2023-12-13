@@ -27,27 +27,39 @@ func NewDownloaddClnt(fsl *fslib.FsLib, srvId string, realm string) (*DownloaddC
 }
 
 func (ddc *DownloaddClnt) DownloadLib(path string, copyFolder bool) error {
-	req := &proto.DownloadLibRequest{
+	req := &proto.DownloadRequest{
 		NamedPath:  path,
 		Realm:      ddc.realm,
 		CopyFolder: copyFolder,
 	}
-	res := &proto.DownloadLibResponse{}
+	res := &proto.DownloadResponse{}
 	if err := ddc.rpcc.RPC("Downloadd.DownloadLib", req, res); err != nil {
 		return err
 	}
 	return nil
 }
 
-// func (ddc *DownloaddClnt) DownloadNamed(path string, copyFolder bool) error {
-// 	req := &proto.DownloadNamedRequest{
-// 		NamedPath:  path,
-// 		Realm:      ddc.realm,
-// 		CopyFolder: copyFolder,
-// 	}
-// 	res := &proto.DownloadNamedResponse{}
-// 	if err := ddc.rpcc.RPC("Downloadd.DownloadNamed", req, res); err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
+func (ddc *DownloaddClnt) DownloadNamed(path string, copyFolder bool) error {
+	req := &proto.DownloadRequest{
+		NamedPath:  path,
+		Realm:      ddc.realm,
+		CopyFolder: copyFolder,
+	}
+	res := &proto.DownloadResponse{}
+	if err := ddc.rpcc.RPC("Downloadd.DownloadNamed", req, res); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ddc *DownloaddClnt) ClearCache(path string) error {
+	req := &proto.ClearRequest{
+		NamedPath: path,
+		Realm:     ddc.realm,
+	}
+	res := &proto.ClearResponse{}
+	if err := ddc.rpcc.RPC("Downloadd.ClearCache", req, res); err != nil {
+		return err
+	}
+	return nil
+}

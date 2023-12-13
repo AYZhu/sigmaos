@@ -2,7 +2,9 @@ package container_test
 
 import (
 	"fmt"
+	"log"
 	"sigmaos/proc"
+	sp "sigmaos/sigmap"
 	"sigmaos/test"
 	"testing"
 	"time"
@@ -49,5 +51,48 @@ func TestPythonLib(t *testing.T) {
 	st, err := ts.WaitExit(p.GetPid())
 	assert.Nil(t, err)
 	assert.True(t, st.IsStatusOK(), st)
+	ts.Shutdown()
+}
+
+func TestPythonFile(t *testing.T) {
+	ts := test.NewTstateAll(t)
+
+	fd, err := ts.Create("name/a.txt", sp.DMWRITE|sp.DMREAD, sp.OWRITE)
+	assert.Nil(t, err)
+	ts.Write(fd, []byte("hello, world!\n"))
+	ts.Close(fd)
+
+	p := proc.NewProc("python", []string{"/~~/pyproc/fileops.py"})
+	err = ts.Spawn(p)
+	err = ts.WaitStart(p.GetPid())
+	st, err := ts.WaitExit(p.GetPid())
+	assert.Nil(t, err)
+	assert.True(t, st.IsStatusOK(), st)
+
+	sts, err := ts.GetDir(sp.NAMED)
+	assert.Nil(t, err)
+
+	log.Printf("%v: %v\n", sp.NAMED, sp.Names(sts))
+	assert.Contains(t, sp.Names(sts), "a.txt")
+
+	var length (sp.Tsize)
+
+	for _, st := range sts {
+		if st.Name == "a.txt" {
+			length = sp.Tsize(st.Length)
+		}
+	}
+
+	fd, err = ts.Open("name/a.txt", sp.OREAD)
+	assert.Nil(t, err)
+	out, err := ts.Read(fd, length)
+	assert.Nil(t, err)
+
+	err = ts.Remove("name/a.txt")
+	assert.Nil(t, err)
+
+	assert.Equal(t, []byte("goodbye, test!"), out)
+	ts.Close(fd)
+
 	ts.Shutdown()
 }

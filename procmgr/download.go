@@ -34,9 +34,13 @@ func (mgr *ProcMgr) setupUserBinCache(p *proc.Proc) {
 	if _, ok := mgr.cachedProcBins[p.GetRealm()]; !ok {
 		mgr.cachedProcBins[p.GetRealm()] = make(map[string]bool)
 		cachePn := path.Dir(cachePath(p.GetRealm(), p.GetProgram()))
+		filecachePn := path.Join(path.Dir(cachePath(p.GetRealm(), p.GetProgram())), "filecache")
 		// Make a dir to cache the realm's binaries.
 		if err := mgr.rootsc.MkDir(cachePn, 0777); err != nil && !serr.IsErrCode(err, serr.TErrExists) {
 			db.DFatalf("Error MkDir cache dir [%v]: %v", cachePn, err)
+		}
+		if err := mgr.rootsc.MkDir(filecachePn, 0777); err != nil && !serr.IsErrCode(err, serr.TErrExists) {
+			db.DFatalf("Error MkDir filecache dir [%v]: %v", cachePn, err)
 		}
 	}
 }

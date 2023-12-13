@@ -50,6 +50,20 @@ func main() {
 			out.Close()
 			os.Exit(0)
 		}
+		if text[0] == 'd' {
+			ddc.DownloadNamed(text[1:len(text)-1], false)
+			if err != nil {
+				db.DPrintf(db.ALWAYS, "error executing %v: %v", text, err)
+			}
+			out.WriteString("d\n")
+		}
+		if text[0] == 'u' {
+			ddc.ClearCache(text[1 : len(text)-1])
+			if err != nil {
+				db.DPrintf(db.ALWAYS, "error executing %v: %v", text, err)
+			}
+			out.WriteString("d\n")
+		}
 		if text[0] == 'p' {
 			if text[1] == 'b' {
 				sc.Started()
